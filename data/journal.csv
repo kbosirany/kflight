@@ -6,3 +6,10 @@ date_collecte,heure,id_recherche,statut,n_offres,message
 2026-09-30,00:33:04,Bordeaux | Diego-Suarez | 2027-08-16 | 21j,erreur,0,Google Flights hasn't returned any results for this query.
 2026-09-30,00:33:10,Bordeaux | Diego-Suarez | 2027-08-16 | 28j,erreur,0,Google Flights hasn't returned any results for this query.
 2026-09-30,00:33:18,Bordeaux | Diego-Suarez | 2027-08-17 | 21j,erreur,0,Google Flights hasn't returned any results for this query.
+2026-09-30,05:32:48,Paris | Diego-Suarez | 2027-08-17 | 28j,ok,1,
+2026-09-30,05:32:53,Paris | Nosy Be | 2027-08-17 | 28j,ok,6,
+2026-09-30,05:32:55,Bordeaux | Diego-Suarez | 2027-08-15 | 21j,vide,0,Google Flights hasn't returned any results for this query.
+2026-09-30,05:32:55,Bordeaux | Diego-Suarez | 2027-08-15 | 28j,vide,0,Google Flights hasn't returned any results for this query.
+2026-09-30,05:32:57,Bordeaux | Diego-Suarez | 2027-08-16 | 21j,vide,0,Google Flights hasn't returned any results for this query.
+2026-09-30,05:32:57,Bordeaux | Diego-Suarez | 2027-08-16 | 28j,vide,0,Google Flights hasn't returned any results for this query.
+2026-09-30,05:33:03,Bordeaux | Diego-Suarez | 2027-08-17 | 21j,vide,0,Google Flights hasn't returned any results for this query.

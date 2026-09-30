@@ -1,0 +1,8 @@
+date_collecte,id_recherche,origine,destination,date_depart,date_retour,trajet,categorie,compagnies,vols,aeroport_depart,aeroport_arrivee,heure_depart,heure_arrivee,escales,lieux_escale,duree_min,prix,devise,arrivee_dans_fenetre
+2026-09-30,Paris | Diego-Suarez | 2027-08-17 | 28j,Paris,Diego-Suarez,2027-08-17,2027-09-14,aller simple,autre,Air Austral,"UU 984, UU 557",CDG,DIE,2027-08-17 19:00,2027-08-18 13:05,1,RUN,1025,1346,EUR,TRUE
+2026-09-30,Paris | Nosy Be | 2027-08-17 | 28j,Paris,Nosy Be,2027-08-17,2027-09-14,aller simple,meilleure,Ethiopian,"ET 735, ET 837",CDG,NOS,2027-08-17 21:40,2027-08-18 14:45,1,ADD,965,759,EUR,TRUE
+2026-09-30,Paris | Nosy Be | 2027-08-17 | 28j,Paris,Nosy Be,2027-08-17,2027-09-14,aller simple,autre,Etihad + Ethiopian,"EY 32, ET 615, ET 837",CDG,NOS,2027-08-17 10:40,2027-08-18 14:45,2,"AUH, ADD",1625,899,EUR,TRUE
+2026-09-30,Paris | Nosy Be | 2027-08-17 | 28j,Paris,Nosy Be,2027-08-17,2027-09-14,aller simple,autre,Etihad + Ethiopian,"EY 34, ET 615, ET 837",CDG,NOS,2027-08-17 21:50,2027-08-19 14:45,2,"AUH, ADD",2395,899,EUR,TRUE
+2026-09-30,Paris | Nosy Be | 2027-08-17 | 28j,Paris,Nosy Be,2027-08-17,2027-09-14,aller simple,autre,Air Austral,"UU 972, UU 431",CDG,NOS,2027-08-17 22:45,2027-08-19 11:55,1,RUN,2170,1223,EUR,TRUE
+2026-09-30,Paris | Nosy Be | 2027-08-17 | 28j,Paris,Nosy Be,2027-08-17,2027-09-14,aller simple,autre,Air Europa + Ethiopian,"UX 1026, ET 741, ET 837",ORY,NOS,2027-08-17 19:25,2027-08-18 14:45,2,"MAD, ADD",1100,1313,EUR,TRUE
+2026-09-30,Paris | Nosy Be | 2027-08-17 | 28j,Paris,Nosy Be,2027-08-17,2027-09-14,aller simple,autre,Lufthansa + Ethiopian,"LH 1051, ET 707, ET 837",CDG,NOS,2027-08-17 19:55,2027-08-18 14:45,2,"FRA, ADD",1070,1397,EUR,TRUE
