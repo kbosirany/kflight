@@ -43,6 +43,10 @@ meilleures_options <- function(offres, voyageurs, transferts) {
   if (!nrow(r)) return(data.frame())
   r <- r[order(r$prix, r$duree_min), , drop = FALSE]
   r <- r[!duplicated(paste(r$origine, r$destination, r$trajet)), , drop = FALSE]
+  # Dès qu'un aller-retour existe pour une option, l'aller simple n'est plus
+  # montré : les deux prix ne sont pas comparables.
+  a_retour <- paste(r$origine, r$destination)[r$trajet == "aller-retour"]
+  r <- r[!(r$trajet == "aller simple" & paste(r$origine, r$destination) %in% a_retour), , drop = FALSE]
   cout <- function(liste, nom) {
     v <- liste[[nom]]$cout_par_personne
     if (is.null(v)) NA_real_ else as.numeric(v)

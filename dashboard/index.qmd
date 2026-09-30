@@ -73,7 +73,7 @@ if (!nrow(options)) {
     `Vols × groupe` = format_euros(options$total_vols_groupe),
     `Coût complet groupe` = format_euros(options$total_complet_groupe),
     Voir = lien(lien_google_flights(
-      combinaisons(cfg$recherches)$codes_origine[match(options$id_recherche, combinaisons(cfg$recherches)$id_recherche)],
+      vapply(options$origine, function(o) Find(function(x) x$nom == o, cfg$recherches$origines)$codes, "", USE.NAMES = FALSE),
       options$aeroport_arrivee, options$date_depart,
       ifelse(options$trajet == "aller simple", NA, options$date_retour)), "Google Flights"),
     check.names = FALSE
@@ -207,7 +207,7 @@ Les prix sont collectés pour une personne. Pour un groupe, il peut rester moins
 
 ```{r}
 #| results: asis
-combos <- combinaisons(cfg$recherches)
+combos <- combinaisons(cfg$recherches, Sys.Date())
 faites <- if (nrow(journal)) sum(combos$id_recherche %in% journal$id_recherche[journal$statut == "ok"]) else 0
 erreurs <- if (nrow(journal)) journal[journal$statut == "erreur" & as.Date(journal$date_collecte) == derniere, , drop = FALSE] else journal
 cat(sprintf("%d combinaisons possibles, dont %d déjà cherchées au moins une fois.", nrow(combos), faites))

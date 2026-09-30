@@ -4,14 +4,20 @@
 \alias{combinaisons}
 \title{Toutes les combinaisons de recherche décrites par la configuration}
 \usage{
-combinaisons(recherches)
+combinaisons(recherches, date_collecte = NULL)
 }
 \arguments{
 \item{recherches}{L'élément \code{recherches} de \code{\link[=lire_config]{lire_config()}}.}
+
+\item{date_collecte}{Date de la collecte, ou \code{NULL} pour tout compter en
+aller-retour.}
 }
 \value{
 Un data.frame, une ligne par recherche possible.
 }
 \description{
-Toutes les combinaisons de recherche décrites par la configuration
+Avec \code{date_collecte}, les recherches dont la date de retour dépasse
+\code{horizon_jours} (Google Flights ne vend qu'environ 11 mois à l'avance) sont
+marquées \code{"aller simple"}. Le retour n'y change rien : les durées de séjour
+se rassemblent alors en une seule recherche par date de départ.
 }

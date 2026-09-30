@@ -26,9 +26,8 @@ collecter <- function(dossier = ".", cle = Sys.getenv("SERPAPI_KEY"),
   cfg <- lire_config(dossier)$recherches
   devise <- cfg$devise %||% "EUR"
   fenetre <- c(cfg$arrivee_min, cfg$arrivee_max)
-  a_faire <- choisir_recherches(combinaisons(cfg), lire_donnees("journal", dossier), cfg)
-  horizon <- date_collecte + as.integer(cfg$horizon_jours %||% 330)
-  a_faire$trajet <- ifelse(a_faire$retour > horizon, "aller simple", "aller-retour")
+  a_faire <- choisir_recherches(combinaisons(cfg, date_collecte),
+                                lire_donnees("journal", dossier), cfg)
 
   journal <- lapply(seq_len(nrow(a_faire)), function(i) {
     combo <- a_faire[i, , drop = FALSE]

@@ -86,3 +86,26 @@ test_that("une recherche sans résultat n'est pas réessayée en priorité", {
 test_that("le lien aller simple est bien formé", {
   expect_match(lien_google_flights("BOD", "NOS", "2027-08-17"), "One%20way")
 })
+
+test_that("en aller simple, les durées de séjour ne multiplient pas les recherches", {
+  cfg <- lire_config(depot_test())$recherches
+  simple <- combinaisons(cfg, as.Date("2026-09-30"))
+  expect_equal(nrow(simple), 2 * 2 * 2)
+  expect_true(all(simple$trajet == "aller simple"))
+  expect_true(all(is.na(simple$duree)))
+  # Le suivi quotidien retrouve sa recherche malgré l'absence de durée.
+  choix <- choisir_recherches(simple, data.frame(), cfg)
+  expect_equal(choix$id_recherche[1], "Paris | Nosy Be | 2027-08-17 | aller simple")
+  # Plus tard, toutes les durées redeviennent des aller-retour distincts.
+  expect_equal(nrow(combinaisons(cfg, as.Date("2027-06-01"))), 16)
+})
+
+test_that("l'aller simple disparait des meilleures options dès qu'un aller-retour existe", {
+  dossier <- depot_test()
+  cfg <- lire_config(dossier)
+  collecter(dossier, cle = "k", date_collecte = as.Date("2026-09-30"), requeteur = function(...) fixture())
+  collecter(dossier, cle = "k", date_collecte = as.Date("2027-06-01"), requeteur = function(...) fixture())
+  opts <- meilleures_options(lire_donnees("offres", dossier), 6, cfg$transferts)
+  expect_equal(sum(opts$origine == "Paris" & opts$destination == "Nosy Be"), 1)
+  expect_equal(opts$trajet[opts$origine == "Paris" & opts$destination == "Nosy Be"], "aller-retour")
+})

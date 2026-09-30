@@ -29,3 +29,16 @@ test_that("une recherche en erreur reste prioritaire", {
                         statut = "erreur")
   expect_equal(choisir_recherches(combos, journal, cfg)$id_recherche[2], choix$id_recherche[2])
 })
+
+test_that("une recherche vide est retentée moins vite qu'une recherche réussie", {
+  cfg <- lire_config(depot_test())$recherches
+  cfg$recherches_par_jour <- 100
+  combos <- combinaisons(cfg)
+  autres <- setdiff(combos$id_recherche, "Paris | Nosy Be | 2027-08-17 | 28j")
+  journal <- data.frame(
+    date_collecte = c("2026-09-30", "2026-09-30"),
+    id_recherche = autres[1:2], statut = c("vide", "ok")
+  )
+  ordre <- choisir_recherches(combos, journal, cfg)$id_recherche
+  expect_gt(match(autres[1], ordre), match(autres[2], ordre))
+})

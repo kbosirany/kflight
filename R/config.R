@@ -19,10 +19,17 @@ lire_config <- function(dossier = ".") {
 
 #' Toutes les combinaisons de recherche décrites par la configuration
 #'
+#' Avec `date_collecte`, les recherches dont la date de retour dépasse
+#' `horizon_jours` (Google Flights ne vend qu'environ 11 mois à l'avance) sont
+#' marquées `"aller simple"`. Le retour n'y change rien : les durées de séjour
+#' se rassemblent alors en une seule recherche par date de départ.
+#'
 #' @param recherches L'élément `recherches` de [lire_config()].
+#' @param date_collecte Date de la collecte, ou `NULL` pour tout compter en
+#'   aller-retour.
 #' @return Un data.frame, une ligne par recherche possible.
 #' @export
-combinaisons <- function(recherches) {
+combinaisons <- function(recherches, date_collecte = NULL) {
   o <- do.call(rbind, lapply(recherches$origines, as.data.frame))
   d <- do.call(rbind, lapply(recherches$destinations, as.data.frame))
   grille <- expand.grid(
@@ -38,14 +45,25 @@ combinaisons <- function(recherches) {
     depart = grille$depart,
     retour = grille$depart + grille$duree,
     duree = grille$duree,
+    trajet = "aller-retour",
     stringsAsFactors = FALSE
   )
+  if (!is.null(date_collecte)) {
+    horizon <- as.Date(date_collecte) + as.integer(recherches$horizon_jours %||% 330)
+    simple <- res$retour > horizon
+    res$trajet[simple] <- "aller simple"
+    res$retour[simple] <- as.Date(NA)
+    res$duree[simple] <- NA_integer_
+    res <- res[!duplicated(paste(res$origine, res$destination, res$depart, res$trajet, res$duree)), ,
+               drop = FALSE]
+  }
   res$id_recherche <- id_recherche(res$origine, res$destination, res$depart, res$duree)
   res[order(res$origine, res$destination, res$depart, res$duree), , drop = FALSE]
 }
 
 id_recherche <- function(origine, destination, depart, duree) {
-  paste(origine, destination, format(as.Date(depart)), paste0(duree, "j"), sep = " | ")
+  paste(origine, destination, format(as.Date(depart)),
+        ifelse(is.na(duree), "aller simple", paste0(duree, "j")), sep = " | ")
 }
 
 #' Choisir les recherches de la collecte du jour
@@ -57,23 +75,32 @@ id_recherche <- function(origine, destination, depart, duree) {
 #' @param combos Résultat de [combinaisons()].
 #' @param journal Journal des recherches déjà faites (colonnes `id_recherche`,
 #'   `date_collecte`, `statut`), éventuellement vide. Les statuts `"ok"` et
-#'   `"vide"` (aucun résultat) comptent comme faits.
+#'   `"vide"` (aucun résultat, retentée moins souvent) comptent comme faits.
 #' @param recherches L'élément `recherches` de [lire_config()].
 #' @return Les lignes de `combos` à chercher, dans l'ordre.
 #' @export
 choisir_recherches <- function(combos, journal, recherches) {
   budget <- as.integer(recherches$recherches_par_jour)
   suivi <- recherches$suivi_quotidien
-  ids_suivi <- if (length(suivi)) {
-    vapply(suivi, function(s) id_recherche(s$origine, s$destination, s$depart, s$duree), "")
-  } else character()
-  ids_suivi <- intersect(ids_suivi, combos$id_recherche)
+  # Une entrée de suivi désigne la recherche correspondante, y compris quand
+  # elle est en aller simple (la durée de séjour n'y compte pas).
+  ids_suivi <- character()
+  for (s in suivi) {
+    ligne <- combos$origine == s$origine & combos$destination == s$destination &
+      combos$depart == as.Date(as.character(s$depart)) &
+      (is.na(combos$duree) | combos$duree == as.integer(s$duree))
+    ids_suivi <- c(ids_suivi, combos$id_recherche[ligne])
+  }
+  ids_suivi <- unique(ids_suivi)
 
   derniere <- rep(as.Date("1900-01-01"), nrow(combos))
   if (!is.null(journal) && nrow(journal)) {
     ok <- journal[journal$statut %in% c("ok", "vide"), , drop = FALSE]
     if (nrow(ok)) {
-      d <- tapply(as.Date(ok$date_collecte), ok$id_recherche, max)
+      # Une recherche sans résultat repasse au fond de la file : elle est
+      # retentée moins souvent (14 jours de plus), les vols pouvant s'ouvrir.
+      ok$quand <- as.Date(ok$date_collecte) + ifelse(ok$statut == "vide", 14L, 0L)
+      d <- tapply(ok$quand, ok$id_recherche, max)
       trouve <- combos$id_recherche %in% names(d)
       derniere[trouve] <- as.Date(d[combos$id_recherche[trouve]], origin = "1970-01-01")
     }

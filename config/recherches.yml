@@ -12,12 +12,13 @@ devise: EUR
 arrivee_min: 2027-08-16
 arrivee_max: 2027-08-20
 
-# Dates de départ de France testées (un vol long-courrier arrive souvent le
-# lendemain, d'où le 15 août).
-dates_depart: [2027-08-15, 2027-08-16, 2027-08-17, 2027-08-18, 2027-08-19]
+# Dates de départ de France testées. Seuls comptent les vols qui arrivent
+# dans la fenêtre ci-dessus.
+dates_depart: [2027-08-16, 2027-08-17, 2027-08-18, 2027-08-19]
 
-# Durées de séjour testées, en jours (date retour = date départ + durée).
-durees_sejour: [21, 28]
+# Durées de séjour testées, en jours (date retour = date départ + durée) :
+# 3, 4 et 5 semaines.
+durees_sejour: [21, 28, 35]
 
 # Aéroports de départ possibles. Plusieurs codes séparés par une virgule sont
 # cherchés ensemble (ex. les deux aéroports de Paris).
@@ -37,16 +38,20 @@ destinations:
     codes: NOS
 
 # Nombre de recherches par collecte quotidienne. L'offre gratuite de SerpApi
-# donne 250 recherches par mois : 7 par jour en laisse une trentaine pour les
-# lancements manuels.
-recherches_par_jour: 7
+# donne 250 recherches par mois : 8 par jour font environ 243 par mois.
+recherches_par_jour: 8
 
 # Google Flights ne propose des vols qu'environ 11 mois à l'avance. Tant que la
 # date de retour dépasse aujourd'hui + horizon_jours, seul l'aller est cherché.
 horizon_jours: 330
 
 # Combinaisons cherchées à chaque collecte, avant la rotation des autres.
-# Chaque entrée précise origine, destination, date de départ et durée.
+# Chaque entrée précise origine, destination, date de départ et durée (la
+# durée ne compte pas tant que seul l'aller est cherché). Les autres
+# combinaisons (autres dates, Bordeaux, Montpellier) tournent avec les
+# recherches qui restent.
 suivi_quotidien:
   - {origine: Paris, destination: Diego-Suarez, depart: 2027-08-17, duree: 28}
   - {origine: Paris, destination: Nosy Be, depart: 2027-08-17, duree: 28}
+  - {origine: Paris, destination: Diego-Suarez, depart: 2027-08-18, duree: 28}
+  - {origine: Paris, destination: Nosy Be, depart: 2027-08-18, duree: 28}
