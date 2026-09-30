@@ -1,0 +1,26 @@
+Package: kflight
+Title: Suivi des prix de vols France - Antsiranana pour le mariage d'août 2027
+Version: 0.1.0
+Authors@R: person("Kevin", "Bosirany", role = c("aut", "cre"),
+    email = "kevinbosirany@gmail.com")
+Description: Collecte quotidienne des prix Google Flights (via SerpApi) pour
+    un groupe voyageant de France vers Diego-Suarez ou Nosy Be, historique des
+    prix et tableau de bord comparatif.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Language: fr
+Imports:
+    httr2,
+    readr,
+    stats,
+    utils,
+    yaml
+Suggests:
+    ggplot2,
+    jsonlite,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1

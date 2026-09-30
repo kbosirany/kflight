@@ -1,0 +1,8 @@
+^\.github$
+^config$
+^data$
+^dashboard$
+^scripts$
+^Dockerfile$
+^README\.md$
+^_site$

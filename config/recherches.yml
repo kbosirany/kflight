@@ -1,0 +1,48 @@
+# Configuration des recherches de vols kflight.
+# Toute modification ici est prise en compte à la prochaine collecte.
+
+# Nombre de voyageurs : sert uniquement à calculer le coût total du groupe.
+# Les prix sont collectés pour 1 adulte, donc changer ce chiffre ne casse pas
+# l'historique.
+voyageurs: 6
+
+devise: EUR
+
+# Fenêtre d'arrivée à Antsiranana (Diego-Suarez).
+arrivee_min: 2027-08-16
+arrivee_max: 2027-08-20
+
+# Dates de départ de France testées (un vol long-courrier arrive souvent le
+# lendemain, d'où le 15 août).
+dates_depart: [2027-08-15, 2027-08-16, 2027-08-17, 2027-08-18, 2027-08-19]
+
+# Durées de séjour testées, en jours (date retour = date départ + durée).
+durees_sejour: [21, 28]
+
+# Aéroports de départ possibles. Plusieurs codes séparés par une virgule sont
+# cherchés ensemble (ex. les deux aéroports de Paris).
+origines:
+  - nom: Paris
+    codes: CDG,ORY
+  - nom: Bordeaux
+    codes: BOD
+  - nom: Montpellier
+    codes: MPL
+
+# Aéroports d'arrivée possibles.
+destinations:
+  - nom: Diego-Suarez
+    codes: DIE
+  - nom: Nosy Be
+    codes: NOS
+
+# Nombre de recherches par collecte quotidienne. L'offre gratuite de SerpApi
+# donne 250 recherches par mois : 7 par jour en laisse une trentaine pour les
+# lancements manuels.
+recherches_par_jour: 7
+
+# Combinaisons cherchées à chaque collecte, avant la rotation des autres.
+# Chaque entrée précise origine, destination, date de départ et durée.
+suivi_quotidien:
+  - {origine: Paris, destination: Diego-Suarez, depart: 2027-08-17, duree: 28}
+  - {origine: Paris, destination: Nosy Be, depart: 2027-08-17, duree: 28}

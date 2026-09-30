@@ -1,0 +1,30 @@
+# Coûts et temps de trajet qui ne sont pas des vols, à compléter à la main.
+# Laisser `null` tant qu'une valeur n'est pas connue : le tableau de bord
+# affichera alors « à renseigner » au lieu d'inventer un chiffre.
+
+# Transfert entre l'aéroport d'arrivée et Diego-Suarez.
+arrivee:
+  Diego-Suarez:
+    cout_par_personne: 0
+    duree_heures: 0
+    note: Arrivée directe.
+  Nosy Be:
+    cout_par_personne: null
+    duree_heures: null
+    note: >-
+      Bateau Nosy Be - Ankify, puis environ 240 km de route (RN6) jusqu'à
+      Diego, en voiture de location (souvent avec chauffeur) ou taxi-brousse.
+      Compter une demi-journée à une journée.
+
+# Coût d'approche vers l'aéroport de départ, par personne, aller-retour
+# (train, voiture, parking...). À remplir pour comparer les aéroports.
+approche:
+  Paris:
+    cout_par_personne: null
+    note: Train depuis Bordeaux, Dax, Niort ou Montpellier.
+  Bordeaux:
+    cout_par_personne: null
+    note: Proche de Seignosse et de Saint-Jean-d'Angély.
+  Montpellier:
+    cout_par_personne: null
+    note: Sur place pour Kevin, loin pour le reste de la famille.

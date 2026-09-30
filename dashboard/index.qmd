@@ -1,0 +1,211 @@
+---
+title: "Vols pour le mariage à Diego-Suarez"
+subtitle: "Arrivée entre le 16 et le 20 août 2027"
+lang: fr
+format:
+  html:
+    theme: flatly
+    toc: true
+    toc-title: Sommaire
+    embed-resources: true
+    page-layout: full
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+#| include: false
+library(kflight)
+library(ggplot2)
+`%||%` <- function(a, b) if (is.null(a)) b else a
+dossier <- Sys.getenv("KFLIGHT_DOSSIER", "..")
+cfg <- lire_config(dossier)
+n <- as.integer(cfg$recherches$voyageurs)
+offres <- lire_donnees("offres", dossier)
+insights <- lire_donnees("insights", dossier)
+historique <- lire_donnees("historique", dossier)
+journal <- lire_donnees("journal", dossier)
+manuels <- lire_donnees("manuels", dossier)
+options <- meilleures_options(offres, n, cfg$transferts)
+evol <- evolution_prix(offres)
+lien <- function(url, texte) ifelse(is.na(url) | url == "", "", sprintf('<a href="%s" target="_blank">%s</a>', url, texte))
+tableau <- function(df) knitr::kable(df, format = "html", escape = FALSE, row.names = FALSE,
+                                     table.attr = 'class="table table-sm table-striped"')
+mois <- c("janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre")
+date_fr <- function(d) paste(as.integer(format(d, "%d")), mois[as.integer(format(d, "%m"))], format(d, "%Y"))
+derniere <- if (nrow(journal)) max(as.Date(journal$date_collecte)) else NA
+```
+
+::: {.callout-note appearance="simple"}
+**Dernière collecte :** `r if (is.na(derniere)) "aucune pour l'instant" else format(derniere, "%d/%m/%Y")` ·
+**`r nrow(journal[journal$statut == "ok", , drop = FALSE])`** recherches réussies depuis le début ·
+prix calculés pour **`r n` voyageurs**.
+Les prix sont des prix de recherche Google Flights, aller-retour, en classe économique, par personne.
+Ils changent vite : vérifiez toujours sur le site avant de réserver.
+:::
+
+## Meilleures options du moment
+
+Pour chaque aéroport de départ et d'arrivée, le vol le moins cher trouvé lors de la dernière recherche, parmi ceux qui arrivent entre le `r date_fr(cfg$recherches$arrivee_min)` et le `r date_fr(cfg$recherches$arrivee_max)`.
+Le coût complet ajoute le transfert jusqu'à Diego et l'approche vers l'aéroport, quand ils sont renseignés dans `config/transferts.yml`.
+
+```{r}
+if (!nrow(options)) {
+  cat("Pas encore de données : la première collecte n'a pas encore eu lieu.")
+} else {
+  niveau <- c(low = "bas", typical = "normal", high = "élevé")
+  ins <- insights[order(insights$date_collecte, decreasing = TRUE), , drop = FALSE]
+  ins <- ins[!duplicated(ins$id_recherche), , drop = FALSE]
+  options$niveau <- niveau[ins$niveau_prix[match(options$id_recherche, ins$id_recherche)]]
+  tableau(data.frame(
+    Option = paste(options$origine, "→", options$destination),
+    Dates = paste(format(as.Date(options$date_depart), "%d/%m"), "→", format(as.Date(options$date_retour), "%d/%m")),
+    Compagnies = options$compagnies,
+    Escales = ifelse(options$escales == 0, "direct", paste(options$escales, "·", options$lieux_escale)),
+    Durée = format_duree(options$duree_min),
+    Arrivée = format(as.POSIXct(options$heure_arrivee, format = "%Y-%m-%d %H:%M"), "%d/%m %H:%M"),
+    `Prix / pers.` = format_euros(options$prix),
+    `Niveau Google` = ifelse(is.na(options$niveau), "", options$niveau),
+    `Vols × groupe` = format_euros(options$total_vols_groupe),
+    `Coût complet groupe` = format_euros(options$total_complet_groupe),
+    Voir = lien(lien_google_flights(
+      combinaisons(cfg$recherches)$codes_origine[match(options$id_recherche, combinaisons(cfg$recherches)$id_recherche)],
+      options$aeroport_arrivee, options$date_depart, options$date_retour), "Google Flights"),
+    check.names = FALSE
+  ))
+}
+```
+
+## Évolution des prix
+
+Meilleur prix par personne trouvé chaque jour de collecte, pour chaque option.
+
+```{r}
+#| fig-width: 10
+#| fig-height: 4.5
+if (nrow(evol)) {
+  ggplot(evol, aes(date_collecte, prix_min, colour = option)) +
+    geom_line(linewidth = 0.8) + geom_point(size = 1.8) +
+    scale_y_continuous(labels = function(x) paste(x, "€")) +
+    labs(x = NULL, y = "Prix par personne", colour = NULL) +
+    theme_minimal(base_size = 13) + theme(legend.position = "bottom")
+} else cat("La courbe apparaîtra après les premières collectes.")
+```
+
+### Historique fourni par Google
+
+Google Flights donne aussi l'évolution passée du prix le plus bas pour chaque recherche, y compris avant le début de notre collecte.
+
+```{r}
+#| fig-width: 10
+#| fig-height: 4.5
+if (nrow(historique)) {
+  h <- historique
+  h$date <- as.Date(h$date)
+  h$option <- sub("^([^|]+) \\| ([^|]+) \\|.*$", "\\1 → \\2", h$id_recherche)
+  h <- stats::aggregate(prix ~ date + option, data = h, FUN = min)
+  ggplot(h, aes(date, prix, colour = option)) +
+    geom_line(linewidth = 0.8) +
+    scale_y_continuous(labels = function(x) paste(x, "€")) +
+    labs(x = NULL, y = "Prix le plus bas par personne", colour = NULL) +
+    theme_minimal(base_size = 13) + theme(legend.position = "bottom")
+} else cat("Pas encore d'historique Google.")
+```
+
+## Diego direct ou Nosy Be + route ?
+
+```{r}
+#| results: asis
+tr <- cfg$transferts$arrivee
+for (d in names(tr)) {
+  best <- options[options$destination == d, , drop = FALSE]
+  prix <- if (nrow(best)) format_euros(min(best$prix)) else "pas encore de prix"
+  cat(sprintf("- **%s** : meilleur vol %s par personne ; transfert jusqu'à Diego %s par personne, %s. %s\n",
+              d, prix, format_euros(as.numeric(tr[[d]]$cout_par_personne %||% NA)),
+              if (is.null(tr[[d]]$duree_heures)) "durée à renseigner" else paste(tr[[d]]$duree_heures, "h de trajet"),
+              tr[[d]]$note %||% ""))
+}
+```
+
+## Toutes les offres récentes
+
+Le résultat le plus récent de chaque recherche, du moins cher au plus cher (60 premières lignes).
+
+```{r}
+r <- kflight:::offres_recentes(offres)
+if (nrow(r)) {
+  r <- r[order(r$prix), , drop = FALSE]
+  tableau(utils::head(data.frame(
+    Option = paste(r$origine, "→", r$destination),
+    Aller = format(as.Date(r$date_depart), "%d/%m"),
+    Retour = format(as.Date(r$date_retour), "%d/%m"),
+    Compagnies = r$compagnies,
+    Vols = r$vols,
+    Escales = ifelse(r$escales == 0, "direct", r$lieux_escale),
+    Durée = format_duree(r$duree_min),
+    `Prix / pers.` = format_euros(r$prix),
+    Collecte = format(as.Date(r$date_collecte), "%d/%m"),
+    check.names = FALSE
+  ), 60))
+} else cat("Rien pour l'instant.")
+```
+
+## Prix relevés à la main
+
+Pour ajouter un prix vu sur le site d'une compagnie, ajoutez une ligne dans `data/prix_manuels.csv` (directement depuis GitHub, bouton crayon).
+
+```{r}
+if (nrow(manuels)) {
+  m <- manuels[order(manuels$prix_par_personne), , drop = FALSE]
+  tableau(data.frame(
+    Relevé = paste(m$date_releve, m$releve_par),
+    Compagnie = m$compagnie,
+    Option = paste(m$origine, "→", m$destination),
+    Dates = paste(m$date_depart, "→", m$date_retour),
+    Escales = m$escales,
+    `Prix / pers.` = format_euros(m$prix_par_personne),
+    `× groupe` = format_euros(m$prix_par_personne * n),
+    Lien = lien(m$lien, "voir"),
+    Note = m$note,
+    check.names = FALSE
+  ))
+} else cat("Aucun prix relevé à la main pour l'instant.")
+```
+
+## Vérifier soi-même
+
+**Recherches Google Flights** (aller le 17 août, séjour de 4 semaines) :
+
+```{r}
+#| results: asis
+cr <- cfg$recherches
+for (o in cr$origines) for (d in cr$destinations) {
+  dep <- as.Date("2027-08-17")
+  cat(sprintf("- %s\n", lien(lien_google_flights(o$codes, d$codes, dep, dep + 28), paste(o$nom, "→", d$nom))))
+}
+```
+
+**Sites des compagnies :**
+
+```{r}
+#| results: asis
+for (c in cfg$compagnies) cat(sprintf("- %s : %s\n", lien(c$site, c$nom), c$via %||% ""))
+```
+
+## Comment ça marche
+
+Chaque jour, un robot GitHub Actions lance `r cfg$recherches$recherches_par_jour` recherches Google Flights via SerpApi.
+Il commence par les combinaisons suivies quotidiennement, puis fait tourner les autres (aéroport de départ, aéroport d'arrivée, date, durée de séjour).
+Chaque résultat est ajouté, daté, aux fichiers du dossier `data/` : rien n'est jamais effacé, c'est ce qui construit l'historique.
+Les prix sont collectés pour une personne. Pour un groupe, il peut rester moins de places au tarif le plus bas : vérifiez la disponibilité pour tout le groupe avant de réserver.
+
+```{r}
+#| results: asis
+combos <- combinaisons(cfg$recherches)
+faites <- if (nrow(journal)) sum(combos$id_recherche %in% journal$id_recherche[journal$statut == "ok"]) else 0
+erreurs <- if (nrow(journal)) journal[journal$statut == "erreur" & as.Date(journal$date_collecte) == derniere, , drop = FALSE] else journal
+cat(sprintf("%d combinaisons possibles, dont %d déjà cherchées au moins une fois.", nrow(combos), faites))
+if (nrow(erreurs)) cat(sprintf(" Dernière collecte : %d recherche(s) en erreur.", nrow(erreurs)))
+```

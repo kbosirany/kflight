@@ -1,0 +1,51 @@
+{
+  "search_metadata": {"status": "Success"},
+  "best_flights": [
+    {
+      "flights": [
+        {"departure_airport": {"name": "Paris-Charles de Gaulle", "id": "CDG", "time": "2027-08-16 10:30"},
+         "arrival_airport": {"name": "Ivato", "id": "TNR", "time": "2027-08-16 22:35"},
+         "duration": 665, "airline": "Air France", "flight_number": "AF 934", "travel_class": "Economy"},
+        {"departure_airport": {"name": "Ivato", "id": "TNR", "time": "2027-08-17 08:00"},
+         "arrival_airport": {"name": "Arrachart", "id": "DIE", "time": "2027-08-17 09:40"},
+         "duration": 100, "airline": "Madagascar Airlines", "flight_number": "MD 700", "travel_class": "Economy"}
+      ],
+      "layovers": [{"duration": 565, "name": "Ivato", "id": "TNR", "overnight": true}],
+      "total_duration": 1330,
+      "price": 1450,
+      "type": "Round trip",
+      "departure_token": "x"
+    }
+  ],
+  "other_flights": [
+    {
+      "flights": [
+        {"departure_airport": {"name": "Paris-Charles de Gaulle", "id": "CDG", "time": "2027-08-19 21:00"},
+         "arrival_airport": {"name": "Addis Ababa", "id": "ADD", "time": "2027-08-20 06:00"},
+         "duration": 480, "airline": "Ethiopian", "flight_number": "ET 705"},
+        {"departure_airport": {"name": "Addis Ababa", "id": "ADD", "time": "2027-08-21 09:00"},
+         "arrival_airport": {"name": "Arrachart", "id": "DIE", "time": "2027-08-21 15:00"},
+         "duration": 360, "airline": "Ethiopian", "flight_number": "ET 853"}
+      ],
+      "layovers": [{"duration": 1620, "name": "Addis Ababa", "id": "ADD"}],
+      "total_duration": 2460,
+      "price": 990,
+      "type": "Round trip"
+    },
+    {
+      "flights": [
+        {"departure_airport": {"name": "Paris-Orly", "id": "ORY", "time": "2027-08-16 12:00"},
+         "arrival_airport": {"name": "Arrachart", "id": "DIE", "time": "2027-08-17 06:00"},
+         "duration": 1080, "airline": "Corsair", "flight_number": "SS 950"}
+      ],
+      "total_duration": 1080,
+      "type": "Round trip"
+    }
+  ],
+  "price_insights": {
+    "lowest_price": 1450,
+    "price_level": "typical",
+    "typical_price_range": [1300, 1700],
+    "price_history": [[1790640000, 1500], [1790726400, 1480]]
+  }
+}

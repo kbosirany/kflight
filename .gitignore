@@ -1,0 +1,8 @@
+.Rproj.user
+.Rhistory
+.RData
+.Renviron
+_site/
+dashboard/_site/
+dashboard/.quarto/
+dashboard/*_files/

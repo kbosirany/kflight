@@ -1,0 +1,30 @@
+# Compagnies à vérifier à la main, affichées dans le tableau de bord.
+# La liste est un point de départ : les liaisons réellement ouvertes pour
+# août 2027 se confirment dans les résultats de la collecte.
+- nom: Air France
+  site: https://www.airfrance.fr
+  via: Paris CDG, vol direct vers Antananarivo
+- nom: Corsair
+  site: https://www.flycorsair.com
+  via: Paris Orly, vol direct vers Antananarivo
+- nom: Madagascar Airlines
+  site: https://www.madagascarairlines.com
+  via: Paris vers Antananarivo, vols intérieurs vers Diego et Nosy Be
+- nom: Air Austral
+  site: https://www.air-austral.com
+  via: Escale à La Réunion
+- nom: Ethiopian Airlines
+  site: https://www.ethiopianairlines.com
+  via: Escale à Addis-Abeba
+- nom: Kenya Airways
+  site: https://www.kenya-airways.com
+  via: Escale à Nairobi
+- nom: Turkish Airlines
+  site: https://www.turkishairlines.com
+  via: Escale à Istanbul
+- nom: Emirates
+  site: https://www.emirates.com
+  via: Escale à Dubaï
+- nom: Qatar Airways
+  site: https://www.qatarairways.com
+  via: Escale à Doha
