@@ -42,7 +42,7 @@ destinations:
 recherches_par_jour: 8
 
 # Demande à SerpApi les mêmes résultats que le navigateur Google Flights
-# (recherche plus lente). Testé le 30/09/2026 : mêmes résultats qu'sans, donc désactivé.
+# (recherche plus lente). Testé le 30/09/2026 : mêmes résultats sans cette option, donc désactivée.
 deep_search: false
 
 # Google Flights ne propose des vols qu'environ 11 mois à l'avance. Tant que la
