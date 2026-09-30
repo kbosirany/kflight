@@ -1,14 +1,17 @@
 #' Interroger Google Flights via SerpApi
 #'
-#' Cherche un aller-retour pour 1 adulte : le prix renvoyé est donc un prix
-#' par personne, aller et retour compris.
+#' Cherche pour 1 adulte : le prix renvoyé est donc un prix par personne,
+#' aller et retour compris, ou aller seul si `combo$trajet` vaut
+#' `"aller simple"`.
 #'
-#' @param combo Une ligne de [combinaisons()].
+#' @param combo Une ligne de [combinaisons()], avec éventuellement une colonne
+#'   `trajet`.
 #' @param cle Clé API SerpApi.
 #' @param devise Code devise, par exemple `"EUR"`.
 #' @return La réponse JSON décodée (liste).
 #' @export
 requete_serpapi <- function(combo, cle, devise = "EUR") {
+  aller_simple <- identical(combo$trajet, "aller simple")
   req <- httr2::request("https://serpapi.com/search.json")
   req <- httr2::req_url_query(
     req,
@@ -16,8 +19,8 @@ requete_serpapi <- function(combo, cle, devise = "EUR") {
     departure_id = combo$codes_origine,
     arrival_id = combo$codes_destination,
     outbound_date = format(combo$depart),
-    return_date = format(combo$retour),
-    type = 1,
+    return_date = if (!aller_simple) format(combo$retour),
+    type = if (aller_simple) 2 else 1,
     adults = 1,
     travel_class = 1,
     currency = devise,
@@ -40,6 +43,7 @@ requete_serpapi <- function(combo, cle, devise = "EUR") {
 #' @return Une liste de data.frames `offres`, `insights` et `historique`.
 #' @export
 lire_reponse <- function(rep, combo, date_collecte, fenetre, devise = "EUR") {
+  trajet <- if (is.null(combo$trajet)) "aller-retour" else combo$trajet
   offres <- rbind(
     lire_offres(rep$best_flights, "meilleure"),
     lire_offres(rep$other_flights, "autre")
@@ -54,6 +58,7 @@ lire_reponse <- function(rep, combo, date_collecte, fenetre, devise = "EUR") {
         destination = combo$destination,
         date_depart = format(combo$depart),
         date_retour = format(combo$retour),
+        trajet = trajet,
         stringsAsFactors = FALSE
       ),
       offres,
@@ -72,6 +77,7 @@ lire_reponse <- function(rep, combo, date_collecte, fenetre, devise = "EUR") {
     insights <- data.frame(
       date_collecte = format(date_collecte),
       id_recherche = combo$id_recherche,
+      trajet = trajet,
       prix_min = num_ou_na(pi$lowest_price),
       niveau_prix = chr_ou_na(pi$price_level),
       fourchette_min = num_ou_na(fourchette[1]),
@@ -82,6 +88,7 @@ lire_reponse <- function(rep, combo, date_collecte, fenetre, devise = "EUR") {
     if (length(h)) {
       historique <- data.frame(
         id_recherche = combo$id_recherche,
+        trajet = trajet,
         date = format(as.Date(as.POSIXct(vapply(h, function(x) as.numeric(x[[1]]), 0),
                                          origin = "1970-01-01", tz = "UTC"))),
         prix = vapply(h, function(x) as.numeric(x[[2]]), 0),

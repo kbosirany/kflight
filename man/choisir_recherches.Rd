@@ -10,7 +10,8 @@ choisir_recherches(combos, journal, recherches)
 \item{combos}{Résultat de \code{\link[=combinaisons]{combinaisons()}}.}
 
 \item{journal}{Journal des recherches déjà faites (colonnes \code{id_recherche},
-\code{date_collecte}, \code{statut}), éventuellement vide.}
+\code{date_collecte}, \code{statut}), éventuellement vide. Les statuts \code{"ok"} et
+\code{"vide"} (aucun résultat) comptent comme faits.}
 
 \item{recherches}{L'élément \code{recherches} de \code{\link[=lire_config]{lire_config()}}.}
 }

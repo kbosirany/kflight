@@ -35,8 +35,8 @@ ajouter_historique <- function(df, dossier = ".") {
   if (is.null(df) || !nrow(df)) return(invisible(0L))
   existant <- lire_donnees("historique", dossier)
   if (nrow(existant)) {
-    cle <- paste(df$id_recherche, df$date)
-    df <- df[!cle %in% paste(existant$id_recherche, format(as.Date(existant$date))), , drop = FALSE]
+    cle <- paste(df$id_recherche, df$trajet, df$date)
+    df <- df[!cle %in% paste(existant$id_recherche, existant$trajet, format(as.Date(existant$date))), , drop = FALSE]
   }
   ajouter_donnees(df, "historique", dossier)
 }

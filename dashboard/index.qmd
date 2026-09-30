@@ -43,6 +43,7 @@ derniere <- if (nrow(journal)) max(as.Date(journal$date_collecte)) else NA
 **`r nrow(journal[journal$statut == "ok", , drop = FALSE])`** recherches réussies depuis le début ·
 prix calculés pour **`r n` voyageurs**.
 Les prix sont des prix de recherche Google Flights, aller-retour, en classe économique, par personne.
+Google ne vend des vols qu'environ 11 mois à l'avance : tant que la date de retour est trop lointaine, seul l'aller est cherché et l'option est marquée « aller simple ».
 Ils changent vite : vérifiez toujours sur le site avant de réserver.
 :::
 
@@ -60,8 +61,9 @@ if (!nrow(options)) {
   ins <- ins[!duplicated(ins$id_recherche), , drop = FALSE]
   options$niveau <- niveau[ins$niveau_prix[match(options$id_recherche, ins$id_recherche)]]
   tableau(data.frame(
-    Option = paste(options$origine, "→", options$destination),
-    Dates = paste(format(as.Date(options$date_depart), "%d/%m"), "→", format(as.Date(options$date_retour), "%d/%m")),
+    Option = libelle_option(options$origine, options$destination, options$trajet),
+    Dates = ifelse(options$trajet == "aller simple", format(as.Date(options$date_depart), "%d/%m"),
+                   paste(format(as.Date(options$date_depart), "%d/%m"), "→", format(as.Date(options$date_retour), "%d/%m"))),
     Compagnies = options$compagnies,
     Escales = ifelse(options$escales == 0, "direct", paste(options$escales, "·", options$lieux_escale)),
     Durée = format_duree(options$duree_min),
@@ -72,7 +74,8 @@ if (!nrow(options)) {
     `Coût complet groupe` = format_euros(options$total_complet_groupe),
     Voir = lien(lien_google_flights(
       combinaisons(cfg$recherches)$codes_origine[match(options$id_recherche, combinaisons(cfg$recherches)$id_recherche)],
-      options$aeroport_arrivee, options$date_depart, options$date_retour), "Google Flights"),
+      options$aeroport_arrivee, options$date_depart,
+      ifelse(options$trajet == "aller simple", NA, options$date_retour)), "Google Flights"),
     check.names = FALSE
   ))
 }
@@ -104,7 +107,8 @@ Google Flights donne aussi l'évolution passée du prix le plus bas pour chaque 
 if (nrow(historique)) {
   h <- historique
   h$date <- as.Date(h$date)
-  h$option <- sub("^([^|]+) \\| ([^|]+) \\|.*$", "\\1 → \\2", h$id_recherche)
+  h$option <- libelle_option(sub(" \\|.*$", "", h$id_recherche),
+                             sub("^[^|]+\\| ([^|]+) \\|.*$", "\\1", h$id_recherche), h$trajet)
   h <- stats::aggregate(prix ~ date + option, data = h, FUN = min)
   ggplot(h, aes(date, prix, colour = option)) +
     geom_line(linewidth = 0.8) +
@@ -138,7 +142,7 @@ r <- kflight:::offres_recentes(offres)
 if (nrow(r)) {
   r <- r[order(r$prix), , drop = FALSE]
   tableau(utils::head(data.frame(
-    Option = paste(r$origine, "→", r$destination),
+    Option = libelle_option(r$origine, r$destination, r$trajet),
     Aller = format(as.Date(r$date_depart), "%d/%m"),
     Retour = format(as.Date(r$date_retour), "%d/%m"),
     Compagnies = r$compagnies,

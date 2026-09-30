@@ -41,6 +41,10 @@ destinations:
 # lancements manuels.
 recherches_par_jour: 7
 
+# Google Flights ne propose des vols qu'environ 11 mois à l'avance. Tant que la
+# date de retour dépasse aujourd'hui + horizon_jours, seul l'aller est cherché.
+horizon_jours: 330
+
 # Combinaisons cherchées à chaque collecte, avant la rotation des autres.
 # Chaque entrée précise origine, destination, date de départ et durée.
 suivi_quotidien:

@@ -30,3 +30,9 @@ Choisit les recherches du jour, interroge SerpApi et ajoute les résultats
 aux fichiers de \verb{data/}. Une recherche en échec est notée dans le journal
 sans interrompre les autres.
 }
+\details{
+Google Flights ne propose des vols qu'environ 11 mois à l'avance. Tant que
+la date de retour d'une recherche dépasse \code{horizon_jours}, l'aller seul
+est cherché (colonne \code{trajet} = \code{"aller simple"}) pour démarrer
+l'historique ; l'aller-retour prend le relais dès qu'il devient possible.
+}

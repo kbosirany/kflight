@@ -7,7 +7,8 @@
 requete_serpapi(combo, cle, devise = "EUR")
 }
 \arguments{
-\item{combo}{Une ligne de \code{\link[=combinaisons]{combinaisons()}}.}
+\item{combo}{Une ligne de \code{\link[=combinaisons]{combinaisons()}}, avec éventuellement une colonne
+\code{trajet}.}
 
 \item{cle}{Clé API SerpApi.}
 
@@ -17,6 +18,7 @@ requete_serpapi(combo, cle, devise = "EUR")
 La réponse JSON décodée (liste).
 }
 \description{
-Cherche un aller-retour pour 1 adulte : le prix renvoyé est donc un prix
-par personne, aller et retour compris.
+Cherche pour 1 adulte : le prix renvoyé est donc un prix par personne,
+aller et retour compris, ou aller seul si \code{combo$trajet} vaut
+\code{"aller simple"}.
 }

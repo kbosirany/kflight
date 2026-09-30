@@ -57,3 +57,32 @@ test_that("le lien Google Flights est bien formé", {
   expect_match(l, "^https://www.google.com/travel/flights\\?")
   expect_match(l, "CDG%20to%20DIE")
 })
+
+test_that("l'aller simple remplace l'aller-retour hors de l'horizon Google", {
+  dossier <- depot_test()
+  vus <- character()
+  faux <- function(combo, cle, devise) { vus <<- c(vus, combo$trajet); fixture() }
+  collecter(dossier, cle = "k", date_collecte = as.Date("2026-09-30"), requeteur = faux)
+  expect_true(all(vus == "aller simple"))
+  expect_true(all(lire_donnees("offres", dossier)$trajet == "aller simple"))
+  vus <- character()
+  j <- collecter(dossier, cle = "k", date_collecte = as.Date("2027-01-15"), requeteur = faux)
+  expect_true(all(vus == "aller-retour"))
+  # Une recherche refaite en aller-retour remplace son ancien aller simple.
+  opts <- meilleures_options(lire_donnees("offres", dossier), 6, lire_config(dossier)$transferts)
+  paris_nosy <- opts[opts$origine == "Paris" & opts$destination == "Nosy Be", ]
+  expect_equal(paris_nosy$trajet, "aller-retour")
+})
+
+test_that("une recherche sans résultat n'est pas réessayée en priorité", {
+  dossier <- depot_test()
+  vide <- function(...) list(error = "Google Flights hasn't returned any results for this query.")
+  j1 <- collecter(dossier, cle = "k", date_collecte = as.Date("2026-09-30"), requeteur = vide)
+  expect_true(all(j1$statut == "vide"))
+  j2 <- collecter(dossier, cle = "k", date_collecte = as.Date("2026-10-01"), requeteur = vide)
+  expect_length(intersect(j2$id_recherche[-1], j1$id_recherche[-1]), 0)
+})
+
+test_that("le lien aller simple est bien formé", {
+  expect_match(lien_google_flights("BOD", "NOS", "2027-08-17"), "One%20way")
+})

@@ -56,7 +56,8 @@ id_recherche <- function(origine, destination, depart, duree) {
 #'
 #' @param combos Résultat de [combinaisons()].
 #' @param journal Journal des recherches déjà faites (colonnes `id_recherche`,
-#'   `date_collecte`, `statut`), éventuellement vide.
+#'   `date_collecte`, `statut`), éventuellement vide. Les statuts `"ok"` et
+#'   `"vide"` (aucun résultat) comptent comme faits.
 #' @param recherches L'élément `recherches` de [lire_config()].
 #' @return Les lignes de `combos` à chercher, dans l'ordre.
 #' @export
@@ -70,7 +71,7 @@ choisir_recherches <- function(combos, journal, recherches) {
 
   derniere <- rep(as.Date("1900-01-01"), nrow(combos))
   if (!is.null(journal) && nrow(journal)) {
-    ok <- journal[journal$statut == "ok", , drop = FALSE]
+    ok <- journal[journal$statut %in% c("ok", "vide"), , drop = FALSE]
     if (nrow(ok)) {
       d <- tapply(as.Date(ok$date_collecte), ok$id_recherche, max)
       trouve <- combos$id_recherche %in% names(d)

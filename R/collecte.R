@@ -4,6 +4,11 @@
 #' aux fichiers de `data/`. Une recherche en échec est notée dans le journal
 #' sans interrompre les autres.
 #'
+#' Google Flights ne propose des vols qu'environ 11 mois à l'avance. Tant que
+#' la date de retour d'une recherche dépasse `horizon_jours`, l'aller seul
+#' est cherché (colonne `trajet` = `"aller simple"`) pour démarrer
+#' l'historique ; l'aller-retour prend le relais dès qu'il devient possible.
+#'
 #' @param dossier Racine du dépôt.
 #' @param cle Clé API SerpApi (variable d'environnement `SERPAPI_KEY` par
 #'   défaut).
@@ -22,10 +27,12 @@ collecter <- function(dossier = ".", cle = Sys.getenv("SERPAPI_KEY"),
   devise <- cfg$devise %||% "EUR"
   fenetre <- c(cfg$arrivee_min, cfg$arrivee_max)
   a_faire <- choisir_recherches(combinaisons(cfg), lire_donnees("journal", dossier), cfg)
+  horizon <- date_collecte + as.integer(cfg$horizon_jours %||% 330)
+  a_faire$trajet <- ifelse(a_faire$retour > horizon, "aller simple", "aller-retour")
 
   journal <- lapply(seq_len(nrow(a_faire)), function(i) {
     combo <- a_faire[i, , drop = FALSE]
-    message("Recherche : ", combo$id_recherche)
+    message("Recherche : ", combo$id_recherche, " (", combo$trajet, ")")
     res <- tryCatch({
       rep <- requeteur(combo, cle, devise)
       if (!is.null(rep$error)) stop(rep$error)
@@ -33,10 +40,11 @@ collecter <- function(dossier = ".", cle = Sys.getenv("SERPAPI_KEY"),
     }, error = function(e) e)
 
     if (inherits(res, "error")) {
-      statut <- "erreur"
-      n <- 0L
       msg <- gsub(cle, "***", conditionMessage(res), fixed = TRUE)
-      message("  erreur : ", msg)
+      # « Aucun résultat » n'est pas une panne : inutile de la réessayer demain.
+      statut <- if (grepl("any results", msg, fixed = TRUE)) "vide" else "erreur"
+      n <- 0L
+      message("  ", statut, " : ", msg)
     } else {
       ajouter_donnees(res$offres, "offres", dossier)
       ajouter_donnees(res$insights, "insights", dossier)

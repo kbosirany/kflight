@@ -4,13 +4,14 @@
 \alias{lien_google_flights}
 \title{Lien de recherche Google Flights prêt à cliquer}
 \usage{
-lien_google_flights(codes_origine, codes_destination, depart, retour)
+lien_google_flights(codes_origine, codes_destination, depart, retour = NA)
 }
 \arguments{
 \item{codes_origine, codes_destination}{Codes IATA (plusieurs séparés par
 une virgule acceptés : seul le premier est utilisé dans le lien).}
 
-\item{depart, retour}{Dates de l'aller-retour.}
+\item{depart, retour}{Dates de l'aller-retour ; \code{retour} à \code{NA} pour un
+aller simple.}
 }
 \value{
 Une URL.

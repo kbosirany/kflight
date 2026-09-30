@@ -2,7 +2,7 @@
 % Please edit documentation in R/analyse.R
 \name{meilleures_options}
 \alias{meilleures_options}
-\title{Meilleure offre actuelle par option (origine x destination)}
+\title{Meilleure offre actuelle par option (origine x destination x trajet)}
 \usage{
 meilleures_options(offres, voyageurs, transferts)
 }
@@ -18,5 +18,5 @@ Un data.frame trié du moins cher au plus cher (coût complet
 quand il est connu, sinon prix des vols).
 }
 \description{
-Meilleure offre actuelle par option (origine x destination)
+Meilleure offre actuelle par option (origine x destination x trajet)
 }
