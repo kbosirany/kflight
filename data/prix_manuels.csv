@@ -1,1 +1,3 @@
 date_releve,releve_par,compagnie,origine,destination,date_depart,date_retour,escales,prix_par_personne,devise,lien,note
+2026-09-30,Kevin,Air Austral,Paris,Nosy Be,2027-08-18,2027-09-18,1 (RUN),1036.71,EUR,https://www.air-austral.com,"Aller-retour Loisirs Smart, 1 adulte, taxes incluses (779 + 257,71). 1 bagage 23 kg. Modifiable avec 200 EUR de frais, non remboursable. Aller UU974/UU431, retour UU432/UU975."
+2026-09-30,Kevin,Air Austral,Paris,Nosy Be,2027-08-18,,1 (RUN),1225.13,EUR,https://www.air-austral.com,"Aller simple Loisirs Light, sans bagage en soute. Loisirs Smart : 1285,13. L'aller simple coute plus cher que l'aller-retour."

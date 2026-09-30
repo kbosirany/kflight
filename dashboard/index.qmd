@@ -43,7 +43,7 @@ derniere <- if (nrow(journal)) max(as.Date(journal$date_collecte)) else NA
 **`r nrow(journal[journal$statut == "ok", , drop = FALSE])`** recherches réussies depuis le début ·
 prix calculés pour **`r n` voyageurs**.
 Les prix sont des prix de recherche Google Flights, aller-retour, en classe économique, par personne.
-Google ne vend des vols qu'environ 11 mois à l'avance : tant que la date de retour est trop lointaine, seul l'aller est cherché et l'option est marquée « aller simple ».
+Google ne vend des vols qu'environ 11 mois à l'avance : tant que la date de retour est trop lointaine, seul l'aller est cherché et l'option est marquée « aller simple ». Attention : un aller simple coûte souvent plus cher que la moitié d'un aller-retour, et parfois plus que l'aller-retour entier (Air Austral, Paris → Nosy Be le 18 août : 1 225 € en aller simple contre 1 037 € en aller-retour).
 Ils changent vite : vérifiez toujours sur le site avant de réserver.
 :::
 
@@ -167,7 +167,7 @@ if (nrow(manuels)) {
     Relevé = paste(m$date_releve, m$releve_par),
     Compagnie = m$compagnie,
     Option = paste(m$origine, "→", m$destination),
-    Dates = paste(m$date_depart, "→", m$date_retour),
+    Dates = ifelse(is.na(m$date_retour), paste(m$date_depart, "(aller simple)"), paste(m$date_depart, "→", m$date_retour)),
     Escales = m$escales,
     `Prix / pers.` = format_euros(m$prix_par_personne),
     `× groupe` = format_euros(m$prix_par_personne * n),
