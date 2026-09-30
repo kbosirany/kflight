@@ -16,6 +16,7 @@ depot_test <- function(env = parent.frame()) {
     "destinations:",
     "  - {nom: Diego-Suarez, codes: DIE}",
     "  - {nom: Nosy Be, codes: NOS}",
+    "budget: {vol_cible_min: 1000, vol_cible_max: 1200, total_max: 1500, baisse_min: 50}",
     "recherches_par_jour: 3",
     "suivi_quotidien:",
     "  - {origine: Paris, destination: Nosy Be, depart: 2027-08-17, duree: 28}"

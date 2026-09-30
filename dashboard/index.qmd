@@ -83,7 +83,7 @@ if (!nrow(options)) {
 
 ## Évolution des prix
 
-Meilleur prix par personne trouvé chaque jour de collecte, pour chaque option.
+Meilleur prix par personne trouvé chaque jour de collecte, pour chaque option. Les pointillés marquent le budget visé pour un vol aller-retour (`r format_euros(cfg$recherches$budget$vol_cible_min)` à `r format_euros(cfg$recherches$budget$vol_cible_max)`, plafond tout compris `r format_euros(cfg$recherches$budget$total_max)`). Les allers simples ne sont pas comparables à ce budget.
 
 ```{r}
 #| fig-width: 10
@@ -91,8 +91,11 @@ Meilleur prix par personne trouvé chaque jour de collecte, pour chaque option.
 if (nrow(evol)) {
   ggplot(evol, aes(date_collecte, prix_min, colour = option)) +
     geom_line(linewidth = 0.8) + geom_point(size = 1.8) +
+    geom_hline(yintercept = unlist(cfg$recherches$budget[c("vol_cible_min", "vol_cible_max")]),
+               linetype = "dashed", colour = "grey40") +
     scale_y_continuous(labels = function(x) paste(x, "€")) +
-    labs(x = NULL, y = "Prix par personne", colour = NULL) +
+    labs(x = NULL, y = "Prix par personne", colour = NULL,
+         caption = "Pointillés : budget visé pour le vol (aller-retour)") +
     theme_minimal(base_size = 13) + theme(legend.position = "bottom")
 } else cat("La courbe apparaîtra après les premières collectes.")
 ```

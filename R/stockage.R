@@ -4,7 +4,8 @@ fichiers_donnees <- c(
   insights = "data/insights.csv",
   historique = "data/historique_google.csv",
   journal = "data/journal.csv",
-  manuels = "data/prix_manuels.csv"
+  manuels = "data/prix_manuels.csv",
+  alertes = "data/alertes.csv"
 )
 
 #' Lire une table de données kflight

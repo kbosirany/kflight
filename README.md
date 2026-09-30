@@ -26,6 +26,12 @@ Tout se passe dans `config/`, modifiable directement depuis GitHub (bouton crayo
 
 Les prix sont collectés **par personne** (recherche pour 1 adulte) : changer le nombre de voyageurs met à jour les totaux sans casser l'historique. Pour un groupe, il peut rester moins de places au tarif le plus bas : vérifiez pour tout le groupe avant de réserver.
 
+## Alertes de prix
+
+Quand un **aller-retour** passe sous `budget.vol_cible_max` (dans `config/recherches.yml`), la collecte du jour ouvre une issue GitHub qui te mentionne : tu la reçois par e-mail avec les détails du vol et un lien Google Flights. Une nouvelle alerte n'est envoyée pour la même option que si le prix baisse d'au moins `baisse_min` euros. Les allers simples ne déclenchent rien.
+
+Pour vérifier que tu reçois bien les e-mails : Actions → *Collecte et tableau de bord* → *Run workflow*, coche « Envoyer une alerte de test » et décoche « Lancer aussi une collecte ».
+
 ## Ajouter un prix vu ailleurs
 
 Ajoutez une ligne à `data/prix_manuels.csv` (par exemple un tarif trouvé sur le site d'Air France ou de Madagascar Airlines). Il apparaît dans le tableau de bord à la publication suivante.

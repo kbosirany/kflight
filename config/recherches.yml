@@ -37,6 +37,14 @@ destinations:
   - nom: Nosy Be
     codes: NOS
 
+# Budget par personne pour un aller-retour, en euros. Une alerte est envoyée
+# par e-mail (issue GitHub) quand un aller-retour passe sous `vol_cible_max`.
+budget:
+  vol_cible_min: 1000   # très bon prix pour le vol
+  vol_cible_max: 1200   # bon prix pour le vol
+  total_max: 1500       # plafond tout compris (vol + route jusqu'à Diego)
+  baisse_min: 50        # nouvelle alerte seulement si le prix baisse d'au moins 50 €
+
 # Nombre de recherches par collecte quotidienne. L'offre gratuite de SerpApi
 # donne 250 recherches par mois : 8 par jour font environ 243 par mois.
 recherches_par_jour: 8

@@ -3,6 +3,8 @@
 .RData
 .Renviron
 _site/
+alerte_titre.txt
+alerte_corps.md
 dashboard/_site/
 dashboard/.quarto/
 dashboard/*_files/

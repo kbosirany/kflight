@@ -10,11 +10,16 @@ on:
         description: "Lancer aussi une collecte de prix (consomme le quota SerpApi)"
         type: boolean
         default: true
+      tester_alerte:
+        description: "Envoyer une alerte de test (issue GitHub, donc e-mail) pour vérifier les notifications"
+        type: boolean
+        default: false
   push:
     paths: ["config/**", "data/prix_manuels.csv", "dashboard/**", "R/**"]
 
 permissions:
   contents: write
+  issues: write
   pages: write
   id-token: write
 
@@ -48,6 +53,10 @@ jobs:
           SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
         run: Rscript -e 'kflight::collecter()'
 
+      - name: Préparer l'alerte de prix
+        if: github.event_name == 'schedule' || inputs.collecter
+        run: Rscript -e 'kflight::preparer_alertes()'
+
       - name: Enregistrer les données dans le dépôt
         run: |
           git config user.name "github-actions[bot]"
@@ -60,6 +69,21 @@ jobs:
             git pull --rebase origin "${GITHUB_REF_NAME}"
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
+
+      - name: Envoyer l'alerte de prix (issue GitHub, donc e-mail)
+        if: hashFiles('alerte_corps.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue create --title "$(cat alerte_titre.txt)" --body-file alerte_corps.md
+
+      - name: Envoyer une alerte de test
+        if: inputs.tester_alerte
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          url=$(gh issue create --title "Test d'alerte kflight" \
+            --body "@kbosirany ceci est un test : si tu reçois ce message par e-mail, les alertes de prix fonctionnent. Cette issue se ferme toute seule.")
+          gh issue close "$url" --comment "Test terminé."
 
       - uses: quarto-dev/quarto-actions/setup@v2
 
