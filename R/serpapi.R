@@ -5,7 +5,8 @@
 #' `"aller simple"`.
 #'
 #' @param combo Une ligne de [combinaisons()], avec éventuellement une colonne
-#'   `trajet`.
+#'   `trajet` et une colonne `deep_search` (résultats identiques à ceux du
+#'   navigateur Google Flights, plus lents).
 #' @param cle Clé API SerpApi.
 #' @param devise Code devise, par exemple `"EUR"`.
 #' @return La réponse JSON décodée (liste).
@@ -23,6 +24,7 @@ requete_serpapi <- function(combo, cle, devise = "EUR") {
     type = if (aller_simple) 2 else 1,
     adults = 1,
     travel_class = 1,
+    deep_search = if (isTRUE(combo$deep_search)) "true",
     currency = devise,
     hl = "fr",
     gl = "fr",

@@ -28,6 +28,7 @@ collecter <- function(dossier = ".", cle = Sys.getenv("SERPAPI_KEY"),
   fenetre <- c(cfg$arrivee_min, cfg$arrivee_max)
   a_faire <- choisir_recherches(combinaisons(cfg, date_collecte),
                                 lire_donnees("journal", dossier), cfg)
+  a_faire$deep_search <- isTRUE(cfg$deep_search)
 
   journal <- lapply(seq_len(nrow(a_faire)), function(i) {
     combo <- a_faire[i, , drop = FALSE]

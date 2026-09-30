@@ -41,6 +41,10 @@ destinations:
 # donne 250 recherches par mois : 8 par jour font environ 243 par mois.
 recherches_par_jour: 8
 
+# Demande à SerpApi les mêmes résultats que le navigateur Google Flights
+# (recherche plus lente, mais qui peut faire apparaître des vols de plus).
+deep_search: true
+
 # Google Flights ne propose des vols qu'environ 11 mois à l'avance. Tant que la
 # date de retour dépasse aujourd'hui + horizon_jours, seul l'aller est cherché.
 horizon_jours: 330

@@ -8,7 +8,8 @@ requete_serpapi(combo, cle, devise = "EUR")
 }
 \arguments{
 \item{combo}{Une ligne de \code{\link[=combinaisons]{combinaisons()}}, avec éventuellement une colonne
-\code{trajet}.}
+\code{trajet} et une colonne \code{deep_search} (résultats identiques à ceux du
+navigateur Google Flights, plus lents).}
 
 \item{cle}{Clé API SerpApi.}
 
