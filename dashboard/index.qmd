@@ -138,13 +138,14 @@ for (d in names(tr)) {
 
 ## Toutes les offres récentes
 
-Le résultat le plus récent de chaque recherche, du moins cher au plus cher (60 premières lignes).
+Le résultat le plus récent de chaque recherche, du moins cher au plus cher (60 premières lignes). Le tableau affiche 10 lignes à la fois, faites défiler pour voir la suite ou cliquez sur « Développer » pour tout afficher.
 
 ```{r}
+#| results: asis
 r <- kflight:::offres_recentes(offres)
 if (nrow(r)) {
   r <- r[order(r$prix), , drop = FALSE]
-  tableau(utils::head(data.frame(
+  html <- tableau(utils::head(data.frame(
     Option = libelle_option(r$origine, r$destination, r$trajet),
     Aller = format(as.Date(r$date_depart), "%d/%m"),
     Retour = format(as.Date(r$date_retour), "%d/%m"),
@@ -156,6 +157,39 @@ if (nrow(r)) {
     Collecte = format(as.Date(r$date_collecte), "%d/%m"),
     check.names = FALSE
   ), 60))
+  cat(
+    '<style>',
+    '#offres-wrap { overflow-y: auto; border: 1px solid #dee2e6; }',
+    '#offres-wrap table { margin-bottom: 0; }',
+    '#offres-wrap thead th { position: sticky; top: 0; z-index: 1; background: #fff; box-shadow: 0 1px 0 #dee2e6; }',
+    '</style>',
+    '<div id="offres-wrap">', as.character(html), '</div>',
+    '<button id="offres-toggle" type="button" class="btn btn-sm btn-outline-secondary mt-2">Développer</button>',
+    '<script>',
+    '(function () {',
+    '  var wrap = document.getElementById("offres-wrap");',
+    '  var btn = document.getElementById("offres-toggle");',
+    '  var table = wrap.querySelector("table");',
+    '  var rows = table.tBodies[0].rows;',
+    '  var visibles = 10;',
+    '  if (rows.length <= visibles) { btn.style.display = "none"; return; }',
+    '  var ouvert = false;',
+    '  function hauteur() {',
+    '    var h = table.tHead.offsetHeight;',
+    '    for (var i = 0; i < visibles; i++) h += rows[i].offsetHeight;',
+    '    return h;',
+    '  }',
+    '  function appliquer() {',
+    '    wrap.style.maxHeight = ouvert ? "none" : (hauteur() + 2) + "px";',
+    '    btn.textContent = ouvert ? "Réduire" : "Développer (" + rows.length + " lignes)";',
+    '  }',
+    '  btn.addEventListener("click", function () { ouvert = !ouvert; appliquer(); });',
+    '  window.addEventListener("resize", function () { if (!ouvert) appliquer(); });',
+    '  appliquer();',
+    '})();',
+    '</script>',
+    sep = "\n"
+  )
 } else cat("Rien pour l'instant.")
 ```
 
