@@ -117,3 +117,11 @@ date_collecte,heure,id_recherche,statut,n_offres,message
 2026-10-10,05:32:46,Paris | Diego-Suarez | 2027-08-19 | aller simple,ok,1,
 2026-10-10,05:32:48,Montpellier | Nosy Be | 2027-08-16 | aller simple,ok,5,
 2026-10-10,05:32:50,Montpellier | Nosy Be | 2027-08-17 | aller simple,ok,1,
+2026-10-11,05:32:22,Paris | Diego-Suarez | 2027-08-17 | aller simple,ok,1,
+2026-10-11,05:32:26,Paris | Nosy Be | 2027-08-17 | aller simple,ok,6,
+2026-10-11,05:32:27,Paris | Diego-Suarez | 2027-08-18 | aller simple,ok,1,
+2026-10-11,05:32:31,Paris | Nosy Be | 2027-08-18 | aller simple,ok,6,
+2026-10-11,05:32:38,Bordeaux | Nosy Be | 2027-08-16 | 21j,vide,0,Google Flights hasn't returned any results for this query.
+2026-10-11,05:32:46,Montpellier | Diego-Suarez | 2027-08-16 | 21j,vide,0,Google Flights hasn't returned any results for this query.
+2026-10-11,05:32:59,Montpellier | Nosy Be | 2027-08-16 | 21j,vide,0,Google Flights hasn't returned any results for this query.
+2026-10-11,05:33:11,Paris | Diego-Suarez | 2027-08-16 | 21j,vide,0,Google Flights hasn't returned any results for this query.

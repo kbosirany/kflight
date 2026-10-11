@@ -95,3 +95,7 @@ date_collecte,id_recherche,trajet,prix_min,niveau_prix,fourchette_min,fourchette
 2026-10-10,Paris | Diego-Suarez | 2027-08-19 | aller simple,aller simple,1346,typical,1300,1600
 2026-10-10,Montpellier | Nosy Be | 2027-08-16 | aller simple,aller simple,2603,typical,2450,4100
 2026-10-10,Montpellier | Nosy Be | 2027-08-17 | aller simple,aller simple,6551,high,2450,4100
+2026-10-11,Paris | Diego-Suarez | 2027-08-17 | aller simple,aller simple,1346,typical,1300,1600
+2026-10-11,Paris | Nosy Be | 2027-08-17 | aller simple,aller simple,760,low,790,1150
+2026-10-11,Paris | Diego-Suarez | 2027-08-18 | aller simple,aller simple,1385,typical,1300,1600
+2026-10-11,Paris | Nosy Be | 2027-08-18 | aller simple,aller simple,760,low,790,1150
